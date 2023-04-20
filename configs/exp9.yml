@@ -1,0 +1,46 @@
+exp_name: 'dimension_reduction'
+outdir: './experiments/dr'
+note: 'similarity = cosine'
+
+num_gpu: 1
+
+dataset:
+    train_prefix: '/data/Products-10K/train'
+    train_list: 'my_data/filtered_train_1.csv'
+    num_train_images: 68962
+    val_prefix: '/data/Products-10K/test'
+    val_list: 'my_data/filtered_test_1.csv'
+    num_val_images: 30003
+    cls_convert: 'my_data/cls_convert.json'
+    seed: 42
+    num_classes: 5395
+    img_size: 384
+    input_size: 384
+    batch_size: 8
+    augmentations: 'default'
+    augmentations_valid: 'default'
+    num_workers: 8
+
+augmentation:
+    rotation_degree: 45
+    fill: 255
+
+model:
+    e2e_fe:
+        name: 'maxvit_tiny_tf_384.in1k'
+        channel: 512
+        # weight: 'experiments/e2e/e2e_fe.pt'
+        weight: '../experiments/e2e/e2e_fe.pt'
+        size: 144
+    n_pair: 5
+    target_dim: 64
+
+train:
+    optimizer: 'Adam'
+    # learning_rate: 0.0001 --- first run before shutdown for maintaining server
+    learning_rate: 0.00001
+    lr_schedule:
+        name: 'ReduceLROnPlateau'
+        mode: 'min'
+        factor: 0.1
+        patience: 5

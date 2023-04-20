@@ -1,0 +1,46 @@
+exp_name: 'e2e_feature_extraction'
+outdir: './experiments/e2e'
+
+num_gpu: 1
+
+dataset:
+    train_prefix: '/data/Products-10K/train'
+    train_list: 'my_data/filtered_train_1.csv'
+    num_train_images: 68962
+    val_prefix: '/data/Products-10K/test'
+    val_list: 'my_data/filtered_test_1.csv'
+    num_val_images: 30003
+    cls_convert: 'my_data/cls_convert.json'
+    seed: 42
+    num_classes: 5395
+    img_size: 384
+    input_size: 384
+    batch_size: 8
+    augmentations: 'default'
+    augmentations_valid: 'default'
+    num_workers: 8
+
+augmentation:
+    rotation_degree: 45
+    fill: 255
+
+model:
+    arch: 'maxvit_b'
+    pt_weight: 'maxvit_tiny_tf_384.in1k'
+    channel: 512
+    size: 144
+    arcloss:
+        s: 20.0
+        m: 0.5
+    w_cls: 1
+    w_con: 2
+    n_pair: 5
+
+train:
+    optimizer: 'Adam'
+    learning_rate: 0.0001
+    lr_schedule:
+        name: 'ReduceLROnPlateau'
+        mode: 'min'
+        factor: 0.1
+        patience: 5
